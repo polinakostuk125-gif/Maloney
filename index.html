@@ -7,60 +7,116 @@
     <title>Maloney</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-    <!-- Прихований тег аудіо -->
     <audio id="audio-player"></audio>
 
-    <!-- ЛІВЕ МЕНЮ (САЙДБАР) -->
+    <!-- Спливаючий тост сповіщення -->
+    <div id="toast-message" class="notification-toast">Посилання скопійовано!</div>
+
+    <!-- ЛІВА ПАНЕЛЬ (МЕНЮ) -->
     <aside class="sidebar">
         <div class="logo-area">
             <div class="logo">
-                <h1>Maloney</h1>
+                <h1>SonicPulse</h1>
+                <p>Premium Studio</p>
             </div>
-
+            
             <nav class="menu">
-                <button onclick="loadTopTracks()" class="menu-item active">
+                <button onclick="loadTopTracks()" class="menu-item active" id="btn-home">
                     <span class="material-symbols-outlined">home</span>
                     <span>Головна</span>
                 </button>
-                <button onclick="focusSearch()" class="menu-item">
+                <button onclick="focusSearch()" class="menu-item" id="btn-search">
                     <span class="material-symbols-outlined">search</span>
                     <span>Пошук</span>
                 </button>
             </nav>
         </div>
-    </aside>
-    <main class="main-content">
 
-        <!-- Права плитка: Пошук та список треків -->
-        <div class="glass-panel tracks-box">
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <input type="text" id="search-input" placeholder="Пошук пісень..."
-                    style="flex-grow: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; color: white; outline: none; font-size: 13px;">
-                <button onclick="searchMusic()" class="btn-primary"
-                    style="padding: 8px 16px; font-size: 13px;">Шукати</button>
-            </div>
-
-            <h3 id="list-title">Завантаження трендів...</h3>
-            <ul id="tracks-list" class="tracks-list">
-                <!-- Сюди за допомогою JS будуть вставлятися елементи -->
-            </ul>
+        <!-- Інформація про підключену ноду -->
+        <div style="font-size: 10px; color: #dcbfc7; font-family: monospace; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="color: #ffb0cb; font-weight: bold; margin-bottom: 4px;">Host:</div>
+            <div id="host-name">Пошук сервера...</div>
         </div>
+    </aside>
 
+    <!-- ГОЛОВНА ПЛОЩИНА З КОНТЕНТОМ -->
+    <main class="main-content">
+        
+        <!-- Динамічний банер актуального релізу -->
+        <section class="hero-banner" id="hero-banner">
+            <span class="hero-tag">Гарячий хіт</span>
+            <h2 id="hero-title">Завантаження...</h2>
+            <p id="hero-desc">Отримання найактуальнішого треку з мережі децентралізованого аудіо прямо зараз...</p>
+            <button onclick="playFeaturedSong()" class="btn-primary">
+                <span class="material-symbols-outlined">play_arrow</span>
+                Слухати зараз
+            </button>
+        </section>
+
+        <!-- Нещодавно відтворено -->
+        <section>
+            <div class="section-title">
+                <h3>Нещодавно відтворено</h3>
+                <span onclick="loadTopTracks()">Показати все</span>
+            </div>
+            
+            <div class="horizontal-grid">
+                <!-- Картка 1 -->
+                <div class="glass-card" onclick="quickPlayKeyword('Neon Nights')">
+                    <div class="card-art" style="background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=300&q=80');"></div>
+                    <div class="card-title">Neon Nights</div>
+                    <div class="card-desc">DJ Pulse</div>
+                </div>
+                <!-- Картка 2 -->
+                <div class="glass-card" onclick="quickPlayKeyword('Acoustic Soul')">
+                    <div class="card-art" style="background-image: url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=300&q=80');"></div>
+                    <div class="card-title">Acoustic Soul</div>
+                    <div class="card-desc">The Echoes</div>
+                </div>
+                <!-- Картка 3 -->
+                <div class="glass-card" onclick="quickPlayKeyword('Festival')">
+                    <div class="card-art" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=300&q=80');"></div>
+                    <div class="card-title">Festival Anthems</div>
+                    <div class="card-desc">Various Artists</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Панель з пошуком та списком рекомендацій -->
+        <section style="margin-top: 30px;">
+            <div class="section-title">
+                <h3>Рекомендовано для вас</h3>
+            </div>
+            
+            <div class="glass-panel">
+                <!-- Рядок пошуку -->
+                <div class="search-area">
+                    <input type="text" id="search-input" placeholder="Пошук музики за назвою чи жанром..." onkeydown="if(event.key === 'Enter') searchMusic()">
+                    <button onclick="searchMusic()" class="btn-primary" style="padding: 10px 20px;">Шукати</button>
+                </div>
+                
+                <!-- Список знайдених композицій -->
+                <h3 id="list-title" style="font-size: 15px; margin-bottom: 15px; font-weight: 600; color: #ffb0cb;">Завантаження...</h3>
+                <ul id="tracks-list" class="tracks-list">
+                    <!-- Заповнюється автоматично -->
+                </ul>
+            </div>
         </section>
 
     </main>
-    <nav class="player-bar">
 
-        <!-- Ліва частина: про пісню -->
+    <!-- НИЖНЯ ПАНЕЛЬ: КЕРУВАННЯ МЕДІА -->
+    <nav class="player-bar">
+        
+        <!-- Ліва частина: про трек -->
         <div class="player-left">
             <img id="player-cover" src="" style="display: none;" alt="Cover">
-            <div id="player-placeholder-art"
-                style="width: 50px; height: 50px; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
+            <div id="player-placeholder-art" style="width: 50px; height: 50px; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
                 <span class="material-symbols-outlined">music_note</span>
             </div>
             <div class="player-info-text">
@@ -69,22 +125,21 @@
             </div>
         </div>
 
-        <!-- Середня частина: кнопки та прогрес-бар -->
+        <!-- Середня частина: кнопки та шкала часу -->
         <div class="player-center">
             <div class="player-controls">
                 <button onclick="playPrev()" class="btn-control">
                     <span class="material-symbols-outlined">skip_previous</span>
                 </button>
                 <button onclick="togglePlay()" class="btn-control btn-play-pause">
-                    <span id="play-icon" class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                    <span id="play-icon" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
                 </button>
                 <button onclick="playNext()" class="btn-control">
                     <span class="material-symbols-outlined">skip_next</span>
                 </button>
             </div>
 
-            <!-- Спрощений прогрес-бар відтворення -->
+            <!-- Прогрес-бар -->
             <div class="progress-bar-container">
                 <span id="current-time">0:00</span>
                 <div class="progress-track" onclick="seekAudio(event)">
@@ -94,22 +149,18 @@
             </div>
         </div>
 
-        <!-- Права частина: гучність та кнопка Поділитися -->
+        <!-- Права частина: гучність та шеринг -->
         <div class="player-right">
-            <button onclick="copyCurrentLink()" class="btn-control" title="Скопіювати пряме посилання">
+            <button onclick="copyCurrentLink()" class="btn-control" title="Скопіювати посилання">
                 <span class="material-symbols-outlined">share</span>
             </button>
-            <span class="material-symbols-outlined" style="font-size: 18px; color: #dcbfc7;">volume_up</span>
+            <span class="material-symbols-outlined" style="font-size: 18px; color: #dcbfc7; margin-left: 10px;">volume_up</span>
             <div class="volume-bar" onclick="seekVolume(event)">
                 <div id="volume-fill" class="volume-fill"></div>
             </div>
         </div>
 
     </nav>
-
-
-
-
     <script src="script.js"></script>
 </body>
 
