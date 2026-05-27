@@ -39,6 +39,12 @@ function searchMusic() {
             displayTracks(result.data);
         });
 }
+
+function quickPlayKeyword(keyword) {
+            searchInput.value = keyword;
+            searchMusic();
+        }
+
 function displayTracks(tracks) {
     tracksListContainer.innerHTML = ""; // очищаємо попередній список
 
@@ -209,3 +215,4 @@ function copyCurrentLink() {
     }, 2500);
 }
 initAudius();
+
