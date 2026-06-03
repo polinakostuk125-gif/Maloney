@@ -12,6 +12,7 @@
             height: 100vh;
             display: flex;
             overflow: hidden; /* Забороняємо прокрутку всього вікна браузера */
+            
         }
 
         /* --- СТРУКТУРА СТОРІНКИ (ЛУЙАУТ) --- */
@@ -496,8 +497,10 @@
         }
 html {
   /* Встановлюємо власну картинку курсора для всього сайту */
-  (cursor: url)("https://cdn.custom-cursor.com/db/9776/32/starter-purple-lights-cursor.png"),
-    auto;
+  (cursor: url)("C:\Users\admin\Favorites\Maloney\rehcjh.png"), auto;
+}
+
+/* ЕФЕКТ 2: Стилі для зірочок, які будуть створюватися через JS */
 .star {
   position: absolute;
   font-size: 20px;
