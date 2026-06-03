@@ -494,3 +494,30 @@
             display: none;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
+html {
+  /* Встановлюємо власну картинку курсора для всього сайту */
+  (cursor: url)("https://cdn.custom-cursor.com/db/9776/32/starter-purple-lights-cursor.png"),
+    auto;
+.star {
+  position: absolute;
+  font-size: 20px;
+  pointer-events: none; /* Щоб зірочки не перехоплювали кліки миші */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Центруємо зірочку рівно по центру курсора */
+  animation: flyAndFade 0.8s ease-out forwards; /* Запуск анімації на 0.8 секунди */
+}
+
+/* Анімація для зоряного шлейфу */
+@keyframes flyAndFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    /* Зірочка трохи розлітається вбік/вниз, зменшується та крутиться */
+    transform: translate(-30%, 40px) scale(0.3) rotate(180deg);
+  }
+}
