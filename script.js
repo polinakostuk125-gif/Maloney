@@ -1,19 +1,19 @@
-document.addEventListener('mousemove', function(event) {
-    
+document.addEventListener('mousemove', function (event) {
+
     // 1. Створюємо новий елемент-контейнер (тег span) для зірочки
     const star = document.createElement('span');
     star.classList.add('star');
     star.innerText = '💜'; // Емодзі зірочки
-    
+
     // 2. Визначаємо координати курсора миші на екрані
     // event.clientX — координата X (ліво/право)
     // event.clientY — координата Y (верх/низ)
     star.style.left = event.clientX + 'px';
     star.style.top = event.clientY + 'px';
-    
+
     // 3. Додаємо створену зірочку на сторінку (всередину тегу body)
     document.body.appendChild(star);
-    
+
     // 4. Обов'язково видаляємо елемент через 800 мілісекунд (0.8 сек),
     // коли анімація повністю завершиться, щоб не перевантажувати пам'ять браузера
     setTimeout(() => {
@@ -286,3 +286,4 @@ function copyCurrentLink() {
         toast.style.display = "none";
     }, 2500);
 }
+initAudius();
