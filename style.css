@@ -338,6 +338,47 @@ body {
     text-overflow: ellipsis;
 }
 
+.track-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.btn-like {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    color: #dcbfc7;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.btn-like:hover,
+.btn-like.liked {
+    color: #ff6fa8;
+    background: rgba(255, 176, 203, 0.12);
+}
+
+.btn-like:hover {
+    transform: scale(1.08);
+}
+
+.empty-tracks {
+    padding: 24px;
+    text-align: center;
+    color: #dcbfc7;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-size: 13px;
+}
+
 /* --- НИЖНІЙ ПЛЕЄР (ПАНЕЛЬ КЕРУВАННЯ) --- */
 .player-bar {
     position: fixed;
@@ -420,12 +461,12 @@ body {
 }
 
 .btn-control:hover {
-    color: #ffb0cb;
+    color: #4f008b;
 }
 
 .btn-play-pause {
     background: linear-gradient(to right, #ffb0cb, #f4aeff);
-    color: #1b0c2b;
+    color: #ffffff;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -501,9 +542,11 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-html {
+html,
+body,
+body * {
     /* Встановлюємо власну картинку курсора для всього сайту */
-    cursor: url("rehcjh.png"), auto;
+    cursor: url("rehcjh.png"), auto !important;
 }
 
 /* ЕФЕКТ 2: Стилі для зірочок, які будуть створюватися через JS */
