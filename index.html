@@ -32,6 +32,10 @@
                 </button>
                 <button onclick="showMyTracks()" class="menu-item" id="btn-my-tracks">
                     <span class="material-symbols-outlined">favorite</span>
+                    <span>Улюблені</span>
+                </button>
+                <button onclick="showLocalTracksPage()" class="menu-item" id="btn-local-tracks">
+                    <span class="material-symbols-outlined">library_music</span>
                     <span>Мої треки</span>
                 </button>
                 <button onclick="focusSearch()" class="menu-item" id="btn-search">
@@ -50,6 +54,7 @@
 
     <!-- ГОЛОВНА ПЛОЩИНА З КОНТЕНТОМ -->
     <main class="main-content">
+        <div id="home-page">
         
         <!-- Динамічний банер актуального релізу -->
         <section class="hero-banner" id="hero-banner">
@@ -91,6 +96,16 @@
             </div>
         </section>
 
+        <section>
+            <div class="section-title">
+                <h3>Популярні жанри</h3>
+            </div>
+
+            <div id="genres-grid" class="genres-grid">
+                <button class="genre-chip">Завантаження...</button>
+            </div>
+        </section>
+
         <!-- Панель з пошуком та списком рекомендацій -->
         <section style="margin-top: 30px;">
             <div class="section-title">
@@ -111,6 +126,27 @@
                 </ul>
             </div>
         </section>
+
+        </div>
+
+        <div id="local-tracks-page" class="hidden">
+            <section>
+                <div class="section-title">
+                    <h3>Мої треки</h3>
+                </div>
+
+                <div class="glass-panel upload-panel">
+                    <input type="file" id="local-track-input" accept="audio/*" multiple webkitdirectory onchange="loadTracksFromFolder()">
+                    <label for="local-track-input" class="file-button">
+                        <span class="material-symbols-outlined">folder_open</span>
+                        Обрати папку з музикою
+                    </label>
+                    <div id="selected-files-text" class="selected-files-text">Папку ще не обрано</div>
+                </div>
+
+                <ul id="local-tracks-list" class="tracks-list"></ul>
+            </section>
+        </div>
 
     </main>
 

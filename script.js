@@ -16,14 +16,23 @@ let apiHost = "https://discoveryprovider.audius.co";
 let activeTracksList = [];
 let currentTrackIndex = -1;
 let likedTracks = JSON.parse(localStorage.getItem('likedTracks')) || [];
+let localTracks = [];
 
 const audio = document.getElementById('audio-player');
 const tracksListContainer = document.getElementById('tracks-list');
 const listTitle = document.getElementById('list-title');
 const searchInput = document.getElementById('search-input');
+const homePage = document.getElementById('home-page');
+const localTracksPage = document.getElementById('local-tracks-page');
+const localTrackInput = document.getElementById('local-track-input');
+const localTracksList = document.getElementById('local-tracks-list');
+const selectedFilesText = document.getElementById('selected-files-text');
 const heroBanner = document.getElementById('hero-banner');
 const heroTitle = document.getElementById('hero-title');
 const heroDesc = document.getElementById('hero-desc');
+const genresGrid = document.getElementById('genres-grid');
+
+
 
 function initAudius() {
     fetch("https://api.audius.co")
@@ -47,6 +56,20 @@ function setActiveMenu(activeButtonId) {
     if (activeButton) {
         activeButton.classList.add('active');
     }
+}
+
+function showHomePage() {
+    homePage.classList.remove('hidden');
+    localTracksPage.classList.add('hidden');
+}
+
+function showLocalTracksPage() {
+    setActiveMenu('btn-local-tracks');
+    homePage.classList.add('hidden');
+    localTracksPage.classList.remove('hidden');
+    activeTracksList = localTracks;
+    currentTrackIndex = -1;
+    renderLocalTracks();
 }
 
 function saveLikedTracks() {
@@ -76,6 +99,7 @@ function toggleLike(track, event) {
 }
 
 function loadTopTracks() {
+    showHomePage();
     setActiveMenu('btn-home');
     listTitle.innerText = "Популярне зараз 📈";
     const url = apiHost + "/v1/tracks/trending?app_name=" + appName;
@@ -84,6 +108,59 @@ function loadTopTracks() {
         .then(response => response.json())
         .then(result => {
             activeTracksList = result.data;
+            displayTracks(result.data);
+            updateHeroBanner(result.data);
+            renderPopularGenres(result.data);
+        });
+}
+
+function renderPopularGenres(tracks) {
+    if (!genresGrid) return;
+
+    const genreCounts = {};
+
+    tracks.forEach(track => {
+        if (!track.genre) return;
+
+        genreCounts[track.genre] = (genreCounts[track.genre] || 0) + 1;
+    });
+
+    const popularGenres = Object.keys(genreCounts)
+        .sort((a, b) => genreCounts[b] - genreCounts[a])
+        .slice(0, 8);
+
+    if (popularGenres.length === 0) {
+        genresGrid.innerHTML = "<button class='genre-chip' type='button'>Жанри не знайдено</button>";
+        return;
+    }
+
+    genresGrid.innerHTML = "";
+
+    popularGenres.forEach(genre => {
+        const button = document.createElement("button");
+        button.className = "genre-chip";
+        button.type = "button";
+        button.innerText = genre;
+        button.onclick = function () {
+            loadGenreTracks(genre);
+        };
+
+        genresGrid.appendChild(button);
+    });
+}
+
+function loadGenreTracks(genre) {
+    showHomePage();
+    setActiveMenu('btn-home');
+    listTitle.innerText = "Популярне в жанрі: " + genre;
+
+    const url = apiHost + "/v1/tracks/trending?genre=" + encodeURIComponent(genre) + "&app_name=" + appName;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(result => {
+            activeTracksList = result.data;
+            currentTrackIndex = -1;
             displayTracks(result.data);
             updateHeroBanner(result.data);
         });
@@ -107,6 +184,7 @@ function searchMusic() {
     const query = searchInput.value.trim();
     if (query === "") return;
 
+    showHomePage();
     setActiveMenu('btn-search');
     listTitle.innerText = "Результати пошуку для: " + query;
     const url = apiHost + "/v1/tracks/search?query=" + encodeURIComponent(query) + "&app_name=" + appName;
@@ -120,6 +198,7 @@ function searchMusic() {
 }
 
 function showMyTracks() {
+    showHomePage();
     setActiveMenu('btn-my-tracks');
     activeTracksList = likedTracks;
     currentTrackIndex = -1;
@@ -130,6 +209,88 @@ function showMyTracks() {
 function quickPlayKeyword(keyword) {
     searchInput.value = keyword;
     searchMusic();
+}
+
+function loadTracksFromFolder() {
+    const files = localTrackInput.files;
+
+    if (files.length === 0) {
+        selectedFilesText.innerText = "Папку ще не обрано";
+        return;
+    }
+
+    localTracks.forEach(track => {
+        URL.revokeObjectURL(track.src);
+    });
+
+    localTracks = [];
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileName = file.name.toLowerCase();
+        const isAudio = file.type.startsWith("audio/")
+            || fileName.endsWith(".mp3")
+            || fileName.endsWith(".wav")
+            || fileName.endsWith(".ogg")
+            || fileName.endsWith(".m4a");
+
+        if (isAudio) {
+            localTracks.push({
+                title: file.name,
+                artist: file.webkitRelativePath || "З обраної папки",
+                src: URL.createObjectURL(file),
+                isLocal: true
+            });
+        }
+    }
+
+    activeTracksList = localTracks;
+    currentTrackIndex = -1;
+    renderLocalTracks();
+
+    if (localTracks.length === 0) {
+        selectedFilesText.innerText = "У цій папці аудіофайлів не знайдено";
+    } else {
+        selectedFilesText.innerText = "Знайдено треків: " + localTracks.length;
+    }
+}
+
+function renderLocalTracks() {
+    localTracksList.innerHTML = "";
+
+    if (localTracks.length === 0) {
+        localTracksList.innerHTML = "<li class='empty-tracks'>Тут поки немає ваших треків</li>";
+        return;
+    }
+
+    for (let i = 0; i < localTracks.length; i++) {
+        const track = localTracks[i];
+        const li = document.createElement("li");
+
+        li.className = "track-item";
+        li.innerHTML = `
+            <div class="track-details">
+                <div class="track-pic">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: #dcbfc7;">music_note</span>
+                </div>
+                <div class="track-meta">
+                    <div class="track-title">${escapeHtml(track.title)}</div>
+                    <div class="track-artist">${escapeHtml(track.artist)}</div>
+                </div>
+            </div>
+            <div class="track-actions">
+                <span class="material-symbols-outlined" style="font-size: 20px; color: #ffb0cb;">play_circle</span>
+            </div>
+        `;
+
+        li.onclick = function () {
+            activeTracksList = localTracks;
+            currentTrackIndex = i;
+            playSong(track);
+        };
+
+        localTracksList.appendChild(li);
+    }
 }
 
 function escapeHtml(value) {
@@ -189,6 +350,18 @@ function displayTracks(tracks, emptyMessage = "Нічого не знайден�
 }
 
 function playSong(track) {
+    if (track.isLocal) {
+        document.getElementById("player-title").innerText = track.title;
+        document.getElementById("player-artist").innerText = track.artist;
+        document.getElementById("player-cover").style.display = "none";
+        document.getElementById("player-placeholder-art").style.display = "flex";
+
+        audio.src = track.src;
+        audio.play();
+        document.getElementById("play-icon").innerText = "pause";
+        return;
+    }
+
     const streamUrl = apiHost + "/v1/tracks/" + track.id + "/stream?app_name=" + appName;
     const coverUrl = track.artwork ? track.artwork['150x150'] : '';
 
@@ -296,6 +469,7 @@ function formatSeconds(seconds) {
 }
 
 function focusSearch() {
+    showHomePage();
     setActiveMenu('btn-search');
     searchInput.focus();
 }
@@ -304,6 +478,8 @@ function copyCurrentLink() {
     if (currentTrackIndex === -1) return;
 
     const track = activeTracksList[currentTrackIndex];
+    if (track.isLocal) return;
+
     const streamUrl = apiHost + "/v1/tracks/" + track.id + "/stream?app_name=" + appName;
 
     const dummy = document.createElement('input');
