@@ -31,7 +31,16 @@ const heroBanner = document.getElementById('hero-banner');
 const heroTitle = document.getElementById('hero-title');
 const heroDesc = document.getElementById('hero-desc');
 const genresGrid = document.getElementById('genres-grid');
+// 1. Знаходимо елементи в HTML за їхніми ID
+const toggleBtn = document.getElementById('toggle-menu-btn');
+const sidebar = document.getElementById('sidebar');
 
+// 2. Додаємо подію "клік" на кнопку
+toggleBtn.addEventListener('click', () => {
+  // Метод toggle автоматично додає клас, якщо його немає, 
+  // і видаляє, якщо він вже є.
+  sidebar.classList.toggle('active');
+});
 
 
 function initAudius() {
