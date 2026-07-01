@@ -686,5 +686,45 @@ body * {
     .hero-section{
         background: #d3e9ff;
     }
-   
+ /* Базові стилі для сайдбару */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #1a122c; /* Темний колір як на скріншоті */
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  
+  /* Головне: ховаємо меню ліворуч за межі екрана */
+  transform: translateX(-100%);
+  
+  /* Плавний перехід для анімації */
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* Клас, який ми будемо додавати через JS для показу меню */
+.sidebar.active {
+  transform: translateX(0);
+}
+
+/* Стилі для кнопки */
+.menu-btn {
+  background: #ff007f; /* Рожевий акцент */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+/* Контент сторінки, щоб він не перекривався (опціонально) */
+.main-content {
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}  
 }
