@@ -649,20 +649,42 @@ body * {
         /* Зірочка трохи розлітається вбік/вниз, зменшується та крутиться */
         transform: translate(-30%, 40px) scale(0.3) rotate(180deg);
     }
-@media (max-width: 1200px) {
-    .card{
-        width: calc(33.33% - 14px);
+@media (max-width: 992px) {
+    header{
+        padding: 20px 40px;
     }
+    
+    footer{
+        padding: 40px;
+    }
+    .hero-section{
+        padding: 30px;
+        min-height: 400px;
+    }
+    
+    .products-cards{
+        justify-content: center;
+    }
+
 }
 
-@media(max-width: 992px){
-    .card{
-        width: calc(50% - 10px);
+/* Смартфони (до 576px) */
+@media (max-width: 576px) {
+    header{
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        gap: 20px;
+        background-color: green;
+    }   
+    
+    .menu{
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
     }
-}
-
-@media(max-width: 576px){
-    .card{
-        width: 100%;
+    .hero-section{
+        background: #d3e9ff;
     }
+   
 }
